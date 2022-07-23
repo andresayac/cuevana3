@@ -36,10 +36,10 @@ class Movies
         $contents = $response->getBody()->getContents();
         $crawler = new Crawler($contents);
 
-        $filter = (empty($page)) ? '#tab-1 > ul > li' : '#aa-wp > div > div > main > section > ul > li ';
-        $data = $crawler->filter($filter);
+        $query_filter = $this->config['querySelector']['movies']['querySelector']['movies']['getMovies'];
 
-        $data_movies = [];
+        $filter = (empty($page)) ? $query_filter['path_direct'] : $query_filter['path_pages'];
+        $data = $crawler->filter($filter);
 
         $data->each(function ($node) {
 
@@ -58,10 +58,10 @@ class Movies
             $tmp_array['genres'] = $this->textToArray($node->filter($querySelector['genres'])->text(), ', ', true, 'Género: ');
             $tmp_array['cast'] = $this->textToArray($node->filter($querySelector['cast'])->text(), ', ', true, 'Actores: ');
 
-            array_push($data_movies, $tmp_array);
+            array_push($this->data_movies, $tmp_array);
         });
 
-        return $data_movies;
+        return $this->data_movies;
     }
 
     public function getMovieDetail($id)
@@ -75,25 +75,25 @@ class Movies
         $contents = $response->getBody()->getContents();
         $crawler = new Crawler($contents);
 
+        $querySelector = $this->config['querySelector']['movies']['getMovieDetail'];
+
         $data_movie = [];
-
-        $data_movie['poster'] = str_replace('w185_and_h278', 'w600_and_h900', $crawler->filter('#top-single > div.backdrop > article > div.Image > figure > img')->attr('data-src'));
-        $data_movie['background'] = $crawler->filter('#top-single > div.backdrop > article > div.Image > figure > img')->attr('data-src');
-        $data_movie['title'] = $crawler->filter('#top-single > div.backdrop > article > header > h1')->text();
-        $data_movie['original_title'] = $crawler->filter('#top-single > div.backdrop > article > header > h2')->text();
-        $data_movie['sypnosis'] = $crawler->filter('#top-single > div.backdrop > article > div.Description > p')->text();
-        $data_movie['year'] = $crawler->filter('#top-single > div.backdrop > article > footer > p > span:nth-child(2)')->text();
-        $data_movie['duration'] = $crawler->filter('#top-single > div.backdrop > article > footer > p > span:nth-child(1)')->text();
-        $data_movie['rating'] = $crawler->filter('div.post-ratings > strong:nth-child(7)')->text();
-        $data_movie['director'] = $crawler->filter('#MvTb-Info > ul > li:nth-child(1) > span')->text();
-        $data_movie['genres'] = $crawler->filter('#MvTb-Info > ul > li:nth-child(2) > a')->text();
-        $data_movie['cast'] = $crawler->filter('#MvTb-Info > ul > li.AAIco-adjust.loadactor > a')->text();
+        $data_movie['id'] = $id;
+        $data_movie['poster'] = str_replace('w185_and_h278', 'w600_and_h900', $crawler->filter($querySelector['poster'])->attr('data-src'));
+        $data_movie['background'] = $crawler->filter($querySelector['background'])->attr('data-src');
+        $data_movie['title'] = $crawler->filter($querySelector['title'])->text();
+        $data_movie['original_title'] = $crawler->filter($querySelector['original_title'])->text();
+        $data_movie['sypnosis'] = $crawler->filter($querySelector['sypnosis'])->text();
+        $data_movie['year'] = $crawler->filter($querySelector['year'])->text();
+        $data_movie['duration'] = $crawler->filter($querySelector['duration'])->text();
+        $data_movie['rating'] = $crawler->filter($querySelector['rating'])->text();
+        $data_movie['director'] = $crawler->filter($querySelector['director'])->text();
+        $data_movie['genres'] = $this->textToArray($crawler->filter($querySelector['genres'])->text(), ', ', true, 'Género: ');
+        $data_movie['cast'] = $this->textToArray($crawler->filter($querySelector['cast'])->text(), ', ', true, 'Género: ');
         $data_movie['link_streaming'] = $this->getLinkStreamingMovies($crawler);
-
 
         return $data_movie;
     }
-
 
     public function getLinkStreamingMovies($crawler)
     {
@@ -104,8 +104,7 @@ class Movies
             'OptY' => 'Youtube'
         ];
 
-
-        $id_languajes_dispo = $crawler->filter('#top-single > div.video.cont > div.TPlayerCn.BgA > div > div > div')->extract(['id']);
+        $id_languajes_dispo = $crawler->filter($this->config['querySelector']['movies']['getLinkStreamingMovies']['queryStreaming'])->extract(['id']);
 
         foreach ($id_languajes_dispo as  $value) {
             $id_tmp = preg_replace('/[0-9]+/', '', $value);
