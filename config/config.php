@@ -2,7 +2,7 @@
 
 
 $_config = [
-    'base_url' => 'https://cuevana3.me/',
+    'base_url' => 'https://ww3.cuevana3.me/',
     'path' => [
         'movies' => [
             'cuev_mov_lastest' => '',

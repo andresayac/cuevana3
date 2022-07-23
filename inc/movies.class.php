@@ -9,6 +9,7 @@ class Movies
 
     public $client_cuevana = null;
     public $headers = [];
+    
     public $data_movies = [];
     public $config = [];
 

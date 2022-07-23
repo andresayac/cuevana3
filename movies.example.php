@@ -27,3 +27,5 @@ $cuevana_movies = new Movies($_config);
 
 // id movie 57910
 // echo json_encode($cuevana_movies->getMovieDetail('57910'), JSON_PRETTY_PRINT);
+
+
