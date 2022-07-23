@@ -24,6 +24,8 @@ $_config = [
     'querySelector' => [
         'movies' => [
             'getMovies' => [
+                'path_direct' => '#tab-1 > ul > li',
+                'path_pages' => '#aa-wp > div > div > main > section > ul > li ',
                 'id' => 'div.TPost.C > a',
                 'title' => 'div.TPost.C > a > h2',
                 'url' => 'div.TPost.C > a',
@@ -35,6 +37,22 @@ $_config = [
                 'director' => 'div.TPMvCn > div.Description > p.Director',
                 'genres' => 'div.TPMvCn > div.Description > p.Genre',
                 'cast' => 'div.TPMvCn > div.Description > p.Actors'
+            ],
+            'getMovieDetail' => [
+                'poster' => '#top-single > div.backdrop > article > div.Image > figure > img',
+                'background' => '#top-single > div.backdrop > div > figure > img',
+                'title' => '#top-single > div.backdrop > article > header > h1',
+                'original_title' => '#top-single > div.backdrop > article > header > h2',
+                'year' => '#top-single > div.backdrop > article > footer > p > span:nth-child(2)',
+                'sypnosis' => '#top-single > div.backdrop > article > div.Description > p',
+                'rating' => 'div.post-ratings > strong:nth-child(7)',
+                'duration' => '#top-single > div.backdrop > article > footer > p > span:nth-child(1)',
+                'director' => '#MvTb-Info > ul > li:nth-child(1) > span',
+                'genres' => '#MvTb-Info > ul > li:nth-child(2) > a',
+                'cast' => '#MvTb-Info > ul > li.AAIco-adjust.loadactor > a'
+            ],
+            'getLinkStreamingMovies' => [
+                'queryStreaming' => '#top-single > div.video.cont > div.TPlayerCn.BgA > div > div > div'
             ]
         ]
     ]
