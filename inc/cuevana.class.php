@@ -454,8 +454,30 @@ class Cuevana extends Util
         return $array_data_url_id;
     }
 
-    public function getDownload()
+    public function getDownload($slug = '')
     {
-        echo "HI";
+        $response = $this->requestCuevana($slug);
+
+        if (!$response) return [
+            'success' => false,
+            'data' => [],
+            'message' => 'It is possible that the category does not exist or contains an invalid page number.'
+        ];
+
+        $contents = $response->getBody()->getContents();
+        $crawler = new Crawler($contents);
+        $data = $crawler->filter('#mdl-downloads > div.mdl-cn > div.mdl-bd > div > table > tbody > tr');
+        $data_download = [];
+        $data_download = $data->each(function ($node) {
+            $tmp_array = [];
+            $tmp_array['server'] = $this->getDataNode($node, 'td:nth-child(1)');
+            $tmp_array['language'] =  $this->getDataNode($node, 'td:nth-child(2)');
+            $tmp_array['quality'] =  $this->getDataNode($node, 'td:nth-child(3)');
+            $tmp_array['link'] =  $this->getDataNode($node, 'td:nth-child(4) > a', 'attr', 'href');
+
+            return  $tmp_array;
+        });
+
+        return $data_download;
     }
 }
