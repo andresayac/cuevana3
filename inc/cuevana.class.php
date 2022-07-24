@@ -2,12 +2,11 @@
 
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\DomCrawler\Test\Constraint\CrawlerSelectorExists;
+
 
 class Cuevana extends Util
 {
     public $config;
-    public $client_cuevana, $headers = [];
 
     public $data_movies = [
         'success' => false,
@@ -86,7 +85,7 @@ class Cuevana extends Util
         $filter = (empty($type)) ? $query_filter['path_direct'] : $query_filter['path_pages'];
         $data = $crawler->filter($filter);
 
-        $data->each(function ($node) {
+        $this->data_movies['data'] = $data->each(function ($node) {
 
             $querySelector = $this->config['querySelector']['movies']['getMovies'];
 
@@ -103,7 +102,7 @@ class Cuevana extends Util
             $tmp_array['genres'] = $this->textToArray($node->filter($querySelector['genres'])->text(), ', ', true, 'Género: ');
             $tmp_array['cast'] = $this->textToArray($node->filter($querySelector['cast'])->text(), ', ', true, 'Actores: ');
 
-            array_push($this->data_movies['data'], $tmp_array);
+            return  $tmp_array;
         });
 
         $this->data_movies['success'] = true;
@@ -128,7 +127,7 @@ class Cuevana extends Util
         $filter = $query_filter['path_pages'];
         $data = $crawler->filter($filter);
 
-        $data->each(function ($node) {
+        $this->data_movies_pag['data'] = $data->each(function ($node) {
 
             $querySelector = $this->config['querySelector']['movies']['getMovies'];
 
@@ -144,10 +143,9 @@ class Cuevana extends Util
             $tmp_array['director'] = $node->filter($querySelector['director'])->text();
             $tmp_array['genres'] = $this->textToArray($node->filter($querySelector['genres'])->text(), ', ', true, 'Género: ');
             $tmp_array['cast'] = $this->textToArray($node->filter($querySelector['cast'])->text(), ', ', true, 'Actores: ');
-
-            array_push($this->data_movies_pag['data'], $tmp_array);
-
             $this->data_movies_pag['information']['in_page'] += 1;
+
+            return $tmp_array;
         });
 
         $pages = $crawler->filter('.nav-links');
@@ -182,7 +180,7 @@ class Cuevana extends Util
         $crawler = new Crawler($contents);
 
         $data = $crawler->filter($this->config['path']['series'][$type] . ' > ul > li');
-        $data->each(function ($node) {
+        $this->data_series['data'] = $data->each(function ($node) {
             $querySelector = $this->config['querySelector']['series']['getSeries'];
 
             $tmp_array = [];
@@ -198,7 +196,7 @@ class Cuevana extends Util
             $tmp_array['genres'] = $this->textToArray($node->filter($querySelector['genres'])->text(), ', ', true, 'Género: ');
             $tmp_array['cast'] = $this->textToArray($node->filter($querySelector['cast'])->text(), ', ', true, 'Actores: ');
 
-            array_push($this->data_series['data'], $tmp_array);
+            return $tmp_array;
         });
 
         $this->data_series['success'] = true;
@@ -224,7 +222,7 @@ class Cuevana extends Util
 
         $data = $crawler->filter('ul.MovieList > li');
 
-        $data->each(function ($node) {
+        $this->data_series_pag['data'] = $data->each(function ($node) {
 
             $querySelector = $this->config['querySelector']['series']['getSeries'];
 
@@ -241,9 +239,8 @@ class Cuevana extends Util
             $tmp_array['genres'] = $this->textToArray($node->filter($querySelector['genres'])->text(), ', ', true, 'Género: ');
             $tmp_array['cast'] = $this->textToArray($node->filter($querySelector['cast'])->text(), ', ', true, 'Actores: ');
 
-            array_push($this->data_series_pag['data'], $tmp_array);
-
             $this->data_series_pag['information']['in_page'] += 1;
+            return $tmp_array;
         });
 
         $pages = $crawler->filter('.nav-links');
@@ -351,9 +348,58 @@ class Cuevana extends Util
         return $data_tmp_detail;
     }
 
-    public function getByGenre()
+    public function getByGenre(string $genre = 'sci-fi-fantasy', string $page = '1')
     {
-        echo "HI";
+        $response = $this->requestCuevana("category/{$genre}/page/{$page}");
+
+        if (!$response) return [
+            'success' => false,
+            'data' => [],
+            'message' => 'It is possible that the category does not exist or contains an invalid page number.'
+        ];
+
+        $contents = $response->getBody()->getContents();
+        $crawler = new Crawler($contents);
+
+        $data = $crawler->filter('ul.MovieList > li');
+
+        $data_genre = [
+            'success' => false,
+            'data' => [],
+            'message' => '',
+
+        ];
+
+        $data_genre['data'] = $data->each(function ($node, $index) {
+
+            $tmp_array = [];
+            $tmp_array['id'] = str_replace($this->config['base_url'], '', $this->getDataNode($node, 'a', 'attr', 'href'));
+            $tmp_array['slug'] = $this->getSlugSerie($this->getDataNode($node, 'a', 'attr', 'href'));
+            $tmp_array['title'] = $this->getDataNode($node, '.Title');
+            $tmp_array['url'] = $this->getDataNode($node, 'a', 'attr', 'href');
+            $tmp_array['poster'] = $this->getDataNode($node, '.Image > figure > img', 'attr', 'data-src');
+            $tmp_array['year'] = $this->getDataNode($node, 'p.Info > span.Date');
+            $tmp_array['sypnosis'] = $this->getDataNode($node, 'div.Description > p:nth-child(2)');
+            $tmp_array['rating'] = $this->getDataNode($node, 'span.Vote');
+            $tmp_array['director'] = $this->textToArray($this->getDataNode($node, 'p.AAIco-videocam'), ', ', true, 'Director: ');
+            $tmp_array['genres'] = $this->textToArray($this->getDataNode($node, 'div.TPMvCn > div.Description > p.Genre'), ', ', true, 'Género: ');
+            $tmp_array['cast'] = $this->textToArray($this->getDataNode($node, 'div.TPMvCn > div.Description > p.Actors'), ', ', true, 'Actores: ');
+
+            return $tmp_array;
+        });
+
+        $pages = $crawler->filter('.nav-links');
+        $tmp_data_information = $pages->each(function ($node) {
+            $tmp_array['page'] = (int) $node->filter('.current')->text();
+            $tmp_array['total_pages'] = (int) array_reverse(explode(' ', str_replace('...', '', $node->text())))[0];
+            return $tmp_array;
+        });
+
+        $data_genre['information'] = $tmp_data_information[0] ?? ['page' => $page, 'total_pages' => $page];
+        $data_genre['information']['in_page']  = $crawler->filter('ul.MovieList > li.xxx')->count();
+        $data_genre['message']  = "Data for the category: {$genre}";
+
+        return $data_genre;
     }
 
     public function getSearch()
