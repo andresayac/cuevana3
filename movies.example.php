@@ -3,15 +3,14 @@
 # Dependencies
 require 'vendor/autoload.php';
 
-# Config
-require 'config/config.php';
-
-
 # Movies Class
-require 'inc/movies.class.php';
+require 'inc/util.class.php';
+require 'inc/cuevana.class.php';
 
-$cuevana_movies = new Movies($_config);
 
+$cuevana_movies = new Cuevana();
+
+echo json_encode($cuevana_movies->getGenre()); // 1042 // for-all-mankind // 58602/feng-bao // episodio/interrogation-1x10
 
 // cuev_mov_lastest
 // cuev_mov_release
