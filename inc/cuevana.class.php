@@ -255,7 +255,7 @@ class Cuevana extends Util
         return $this->data_series_pag;
     }
 
-    public function getGenre()
+    public function getGenres()
     {
         $response =  $this->client_cuevana->request('GET', 'category/action-adventure', [
             'headers' => $this->headers
@@ -402,9 +402,12 @@ class Cuevana extends Util
         return $data_genre;
     }
 
+    public function getByActor()
+    {
+    }
+
     public function getSearch()
     {
-        echo "HI";
     }
 
     public function getLinks(string $slug)
@@ -465,11 +468,11 @@ class Cuevana extends Util
         ];
 
         $contents = $response->getBody()->getContents();
-        
+
         # ensure move html close tag to the end of file
         $contents = str_replace('</html>', '', $contents);
         $contents .= '</html>';
-        
+
         $crawler = new Crawler($contents);
         $data = $crawler->filter('#mdl-downloads > div.mdl-cn > div.mdl-bd > div > table > tbody > tr');
         $data_download = [];
