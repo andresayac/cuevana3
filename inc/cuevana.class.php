@@ -465,6 +465,11 @@ class Cuevana extends Util
         ];
 
         $contents = $response->getBody()->getContents();
+        
+        # ensure move html close tag to the end of file
+        $contents = str_replace('</html>', '', $contents);
+        $contents .= '</html>';
+        
         $crawler = new Crawler($contents);
         $data = $crawler->filter('#mdl-downloads > div.mdl-cn > div.mdl-bd > div > table > tbody > tr');
         $data_download = [];
