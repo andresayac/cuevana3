@@ -14,11 +14,11 @@ $ composer install
 Available methods:
 
 - [getMovies](#-getMoviestype): Returns a list with the movies according to the indicated type.
-- [getMoviesPag](#-getMoviesPag): Returns a list with the movies and information of the pagination.
+- [getMoviesPag](#-getMoviesPagpage): Returns a list with the movies and information of the pagination.
 - [getSeries](#-getSeriestype): Returns a list with the series according to the indicated type.
-- [getSeriesPag](#-getSeriesPag): Returns a list with the series and information of the pagination.
-- [getGenres](#-getGenres): Return the complete list of genres.
+- [getSeriesPag](#-getSeriesPagpage): Returns a list with the series and information of the pagination.
 - [getDetail](#-getDetailid): Returns the detail of the selected movie/series.
+- [getGenres](#-getGenres): Return the complete list of genres.
 - [getByGenre](#-getByGenreid-page): Returns a list with movies according to the indicated genre and page.
 - [getByActor](#-getByActorid-page): Returns a list with movies according to the indicated actor.
 - [getSearch](#-getSearchquery-page): Returns a list with movies/series according to query.
@@ -49,19 +49,19 @@ require 'config/config.php';
 
 # Utils Class
 require 'inc/utils.class.php';
-# Movies Class
+# Cuevana Class
 require 'inc/cuevana.class.php';
 
 
-$cuevana_movies = new Cuevana();
+$cuevana_class = new Cuevana();
 
-echo json_encode($cuevana_movies->getMovies(0)); // Latest movies added
-echo json_encode($cuevana_movies->getMovies(1)); // Premiere movies
-echo json_encode($cuevana_movies->getMovies(2)); // Most viewed movies
-echo json_encode($cuevana_movies->getMovies(3)); // Top rated movies
-echo json_encode($cuevana_movies->getMovies(4)); // Latin dub movies
-echo json_encode($cuevana_movies->getMovies(5)); // Spanish dub movies
-echo json_encode($cuevana_movies->getMovies(6)); // Subtitled movies
+echo json_encode($cuevana_class->getMovies(0)); // Latest movies added
+echo json_encode($cuevana_class->getMovies(1)); // Premiere movies
+echo json_encode($cuevana_class->getMovies(2)); // Most viewed movies
+echo json_encode($cuevana_class->getMovies(3)); // Top rated movies
+echo json_encode($cuevana_class->getMovies(4)); // Latin dub movies
+echo json_encode($cuevana_class->getMovies(5)); // Spanish dub movies
+echo json_encode($cuevana_class->getMovies(6)); // Subtitled movies
 ```
 
 Results:
@@ -94,7 +94,7 @@ Results:
 }
 ```
 
-## 🚩 getMoviesPag(Page)
+## 🚩 getMoviesPag(page)
 Returns a list with the movies according to the indicated `page`.
 
 Example:
@@ -108,13 +108,13 @@ require 'config/config.php';
 
 # Utils Class
 require 'inc/utils.class.php';
-# Movies Class
+# Cuevana Class
 require 'inc/cuevana.class.php';
 
 
-$cuevana_movies = new Cuevana();
+$cuevana_class = new Cuevana();
 
-echo json_encode($cuevana_movies->getMoviesPag(1)); // Movies from the respective page
+echo json_encode($cuevana_class->getMoviesPag(1)); // Movies from the respective page
 ```
 
 Results:
@@ -174,17 +174,239 @@ require 'config/config.php';
 
 # Utils Class
 require 'inc/utils.class.php';
-# Movies Class
+# Cuevana Class
 require 'inc/cuevana.class.php';
 
 
-$cuevana_movies = new Cuevana();
+$cuevana_class = new Cuevana();
 
-echo json_encode($cuevana_movies->getSeries(0)); // Latest series added
-echo json_encode($cuevana_movies->getSeries(1)); // Premiere series
-echo json_encode($cuevana_movies->getSeries(2)); // Top rated series
-echo json_encode($cuevana_movies->getSeries(3)); // Most viewed series
+echo json_encode($cuevana_class->getSeries(0)); // Latest series added
+echo json_encode($cuevana_class->getSeries(1)); // Premiere series
+echo json_encode($cuevana_class->getSeries(2)); // Top rated series
+echo json_encode($cuevana_class->getSeries(3)); // Most viewed series
 ```
+
+## 🚩 getSeriesPag(page)
+Returns a list with the series according to the indicated `page`.
+
+Example:
+``` php
+<?php
+# Dependencies
+require 'vendor/autoload.php';
+
+# Config
+require 'config/config.php';
+
+# Utils Class
+require 'inc/utils.class.php';
+# Cuevana Class
+require 'inc/cuevana.class.php';
+
+
+$cuevana_class = new Cuevana();
+
+echo json_encode($cuevana_class->getSeriesPag(1)); // Series from the respective page
+```
+
+Results:
+``` json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "XXXX",
+      "title": "XXXX XXX",
+      "url": "https://ww1.cuevana3.me/58XXX/XXX-XX",
+      "poster": "https://ww1.cuevana3.me/wp-content/uploads/20XX/XX/XXX-XXX-XXX-poster-200x300.jpg",
+      "year": "2021",
+      "sypnosis": "XXXXXXX […]",
+      "rating": "4.29",
+      "duration": "1h 54m",
+      "director": "Director: XXXX",
+      "genres": [
+        "Acción"
+      ],
+      "cast": [
+        "XXX XXX",
+        "XXXXXXX"
+      ]
+    }
+  ],
+  "message": "information obtained for the page: 1",
+  "information": {
+    "page": 1,
+    "total_pages": 168,
+    "in_page": 45
+  }
+}
+```
+## 🚩 getDetail(id)
+Returns a list with the episode or movie according to the indicated `id`.
+
+Example:
+``` php
+<?php
+# Dependencies
+require 'vendor/autoload.php';
+
+# Config
+require 'config/config.php';
+
+# Utils Class
+require 'inc/utils.class.php';
+# Cuevana Class
+require 'inc/cuevana.class.php';
+
+
+$cuevana_class = new Cuevana();
+
+echo json_encode($cuevana_class->getDetail('86xx/xx-xx')); // Movie or  Episode from the respective page
+echo json_encode($cuevana_class->getDetail('episodio/xxxxx-1x10')); // Movie or  Episode from the respective page
+```
+
+## 🚩 getGenres()
+Returns a list with the Genres with information pagination.
+
+Example:
+``` php
+<?php
+# Dependencies
+require 'vendor/autoload.php';
+
+# Config
+require 'config/config.php';
+
+# Utils Class
+require 'inc/utils.class.php';
+# Cuevana Class
+require 'inc/cuevana.class.php';
+
+
+$cuevana_class = new Cuevana();
+
+echo json_encode($cuevana_class->getGenres(); // list the Genres
+```
+
+## 🚩 getByGenre(genre,page)
+Returns a list with the  according to the indicated `genre` and `page`.
+
+Example:
+``` php
+<?php
+# Dependencies
+require 'vendor/autoload.php';
+
+# Config
+require 'config/config.php';
+
+# Utils Class
+require 'inc/utils.class.php';
+# Cuevana Class
+require 'inc/cuevana.class.php';
+
+
+$cuevana_class = new Cuevana();
+
+echo json_encode($cuevana_class->getByGenre('ciencia-ficcion',1)); // Movies or Series from the respective genre and page
+```
+
+
+## 🚩 getByActor(actor,page)
+Returns a list with the series according to the indicated `actor` and `page`.
+
+Example:
+``` php
+<?php
+# Dependencies
+require 'vendor/autoload.php';
+
+# Config
+require 'config/config.php';
+
+# Utils Class
+require 'inc/utils.class.php';
+# Cuevana Class
+require 'inc/cuevana.class.php';
+
+
+$cuevana_class = new Cuevana();
+
+echo json_encode($cuevana_class->getByActor('adam-kiani',1)); // Movies from the respective actor and page
+```
+
+## 🚩 getSearch(query,page)
+Returns a list with the series and movies according to the indicated `query` and `page`.
+
+Example:
+``` php
+<?php
+# Dependencies
+require 'vendor/autoload.php';
+
+# Config
+require 'config/config.php';
+
+# Utils Class
+require 'inc/utils.class.php';
+# Cuevana Class
+require 'inc/cuevana.class.php';
+
+
+$cuevana_class = new Cuevana();
+
+echo json_encode($cuevana_class->getSearch('casa')); // Movies and series from the respective query and page
+```
+
+## 🚩 getLinks(id)
+Returns a list of links  the movies and series according to the indicated `id`.
+
+Example:
+``` php
+<?php
+# Dependencies
+require 'vendor/autoload.php';
+
+# Config
+require 'config/config.php';
+
+# Utils Class
+require 'inc/utils.class.php';
+# Cuevana Class
+require 'inc/cuevana.class.php';
+
+
+$cuevana_class = new Cuevana();
+
+echo json_encode($cuevana_class->getLinks('86xx/xx-xx')); // Movies from the respective page
+echo json_encode($cuevana_class->getLinks('episodio/xxxxx-1x10')); // Series from the respective page
+```
+
+
+## 🚩 getDownload(id)
+Returns a list of links  the movies and series according to the indicated `id`.
+
+Example:
+``` php
+<?php
+# Dependencies
+require 'vendor/autoload.php';
+
+# Config
+require 'config/config.php';
+
+# Utils Class
+require 'inc/utils.class.php';
+# Cuevana Class
+require 'inc/cuevana.class.php';
+
+
+$cuevana_class = new Cuevana();
+
+echo json_encode($cuevana_class->getLinks('86xx/xx-xx')); // Movies from the respective page
+echo json_encode($cuevana_class->getLinks('episodio/xxxxx-1x10')); // Series from the respective page
+```
+
 
 ### **:busts_in_silhouette: Credits**
 
