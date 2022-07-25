@@ -54,13 +54,44 @@ require 'inc/cuevana.class.php';
 
 
 $cuevana_movies = new Cuevana();
-echo json_encode($cuevana_movies->getMovies(0); // Latest movies added
-echo json_encode($cuevana_movies->getMovies(1); // Premiere movies
-echo json_encode($cuevana_movies->getMovies(2); // Most viewed movies
-echo json_encode($cuevana_movies->getMovies(3); // Top rated movies
-echo json_encode($cuevana_movies->getMovies(4); // Latin dub movies
-echo json_encode($cuevana_movies->getMovies(5); // Spanish dub movies
-echo json_encode($cuevana_movies->getMovies(6); // Subtitled movies
+
+echo json_encode($cuevana_movies->getMovies(0)); // Latest movies added
+echo json_encode($cuevana_movies->getMovies(1)); // Premiere movies
+echo json_encode($cuevana_movies->getMovies(2)); // Most viewed movies
+echo json_encode($cuevana_movies->getMovies(3)); // Top rated movies
+echo json_encode($cuevana_movies->getMovies(4)); // Latin dub movies
+echo json_encode($cuevana_movies->getMovies(5)); // Spanish dub movies
+echo json_encode($cuevana_movies->getMovies(6)); // Subtitled movies
+```
+
+Results:
+``` json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "58XX/XXXX",
+      "title": "XXXXXXX XXX",
+      "url": "https://ww1.cuevana3.me/586XX/XXX",
+      "poster": "https://ww1.cuevana3.me/wp-content/uploads/20XX/XX/XXXXXX-200x300.jpg",
+      "year": "2021",
+      "sypnosis": "XXXXXXX […]",
+      "rating": "4.29",
+      "duration": "1h 54m",
+      "director": "XXXX",
+      "genres": [
+        "Acción",
+        "Aventura",
+        "Drama"
+      ],
+      "cast": [
+        "XXXXX",
+        "XXX XXX"
+      ]
+    }
+  ],
+  "message": "Information obtained from: "
+}
 ```
 
 ## 🚩 getMoviesPag(Page)
@@ -82,7 +113,77 @@ require 'inc/cuevana.class.php';
 
 
 $cuevana_movies = new Cuevana();
-echo json_encode($cuevana_movies->getMoviesPag(1); // Movies from the respective page
+
+echo json_encode($cuevana_movies->getMoviesPag(1)); // Movies from the respective page
+```
+
+Results:
+``` json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "586XX/XX-XX",
+      "title": "XXXX XXX",
+      "url": "https://ww1.cuevana3.me/58XXX/XXX-XX",
+      "poster": "https://ww1.cuevana3.me/wp-content/uploads/20XX/XX/XXX-XXX-XXX-poster-200x300.jpg",
+      "year": "2021",
+      "sypnosis": "XXXXXXX […]",
+      "rating": "4.29",
+      "duration": "1h 54m",
+      "director": "Director: XXXX",
+      "genres": [
+        "Acción",
+        "Aventura",
+        "Drama"
+      ],
+      "cast": [
+        "XXX XXX",
+        "XXXXXXX"
+      ]
+    }
+  ],
+  "message": "information obtained for the page: 1",
+  "information": {
+    "page": 1,
+    "total_pages": 168,
+    "in_page": 45
+  }
+}
+```
+
+
+## 🚩 getSeries(type)
+Returns a list with the Series according to the indicated `type`.
+
+| VALUE | TYPE |
+| -----|----- |
+| Latest series added | 0 |
+| Premiere series | 1 |
+| Top rated series | 2 |
+| Most viewed series | 3 |
+
+Example:
+``` php
+<?php
+# Dependencies
+require 'vendor/autoload.php';
+
+# Config
+require 'config/config.php';
+
+# Utils Class
+require 'inc/utils.class.php';
+# Movies Class
+require 'inc/cuevana.class.php';
+
+
+$cuevana_movies = new Cuevana();
+
+echo json_encode($cuevana_movies->getSeries(0)); // Latest series added
+echo json_encode($cuevana_movies->getSeries(1)); // Premiere series
+echo json_encode($cuevana_movies->getSeries(2)); // Top rated series
+echo json_encode($cuevana_movies->getSeries(3)); // Most viewed series
 ```
 
 ### **:busts_in_silhouette: Credits**
